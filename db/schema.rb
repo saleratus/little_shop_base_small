@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20190104183905) do
     t.string "title"
     t.text "description"
     t.integer "score"
+    t.boolean "enabled", default: true
     t.bigint "order_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

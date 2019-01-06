@@ -14,7 +14,7 @@
       <img src="./assets/0.10.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" style="display:none;">
-      <div class="timestamp">Generated <abbr class="timeago" title="2019-01-06T06:29:36-07:00">2019-01-06T06:29:36-07:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2019-01-06T08:44:54-07:00">2019-01-06T08:44:54-07:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -25,7 +25,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         13.13
+         13.16
        </span>
     </span> hits/line)
   </h2>
@@ -117,7 +117,7 @@
         <td>12</td>
         <td>12</td>
         <td>0</td>
-        <td>154.3</td>
+        <td>154.5</td>
       </tr>
       
       <tr>
@@ -257,7 +257,7 @@
         <td>25</td>
         <td>25</td>
         <td>0</td>
-        <td>39.1</td>
+        <td>39.2</td>
       </tr>
       
       <tr>
@@ -277,7 +277,7 @@
         <td>31</td>
         <td>31</td>
         <td>0</td>
-        <td>7.6</td>
+        <td>7.8</td>
       </tr>
       
       <tr>
@@ -287,7 +287,7 @@
         <td>7</td>
         <td>7</td>
         <td>0</td>
-        <td>3.6</td>
+        <td>3.9</td>
       </tr>
       
       <tr>
@@ -323,7 +323,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         10.18
+         10.19
        </span>
     </span> hits/line)
   </h2>
@@ -415,7 +415,7 @@
         <td>12</td>
         <td>12</td>
         <td>0</td>
-        <td>154.3</td>
+        <td>154.5</td>
       </tr>
       
       <tr>
@@ -577,7 +577,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         16.76
+         16.85
        </span>
     </span> hits/line)
   </h2>
@@ -619,7 +619,7 @@
         <td>25</td>
         <td>25</td>
         <td>0</td>
-        <td>39.1</td>
+        <td>39.2</td>
       </tr>
       
       <tr>
@@ -639,7 +639,7 @@
         <td>31</td>
         <td>31</td>
         <td>0</td>
-        <td>7.6</td>
+        <td>7.8</td>
       </tr>
       
       <tr>
@@ -649,7 +649,7 @@
         <td>7</td>
         <td>7</td>
         <td>0</td>
-        <td>3.6</td>
+        <td>3.9</td>
       </tr>
       
       <tr>
@@ -1885,8 +1885,8 @@
           <code class="ruby">  def current_admin?</code>
         </li>
       
-        <li class="covered" data-hits="671" data-linenumber="17">
-          <span class="hits">671</span>
+        <li class="covered" data-hits="672" data-linenumber="17">
+          <span class="hits">672</span>
           
           <code class="ruby">    current_user &amp;&amp; current_user.admin?</code>
         </li>
@@ -1909,8 +1909,8 @@
           <code class="ruby">  def build_cart</code>
         </li>
       
-        <li class="covered" data-hits="397" data-linenumber="21">
-          <span class="hits">397</span>
+        <li class="covered" data-hits="398" data-linenumber="21">
+          <span class="hits">398</span>
           
           <code class="ruby">    @cart ||= Cart.new(session[:cart])</code>
         </li>
@@ -3686,8 +3686,8 @@
           <code class="ruby">  def show</code>
         </li>
       
-        <li class="covered" data-hits="6" data-linenumber="25">
-          <span class="hits">6</span>
+        <li class="covered" data-hits="7" data-linenumber="25">
+          <span class="hits">7</span>
           
           <code class="ruby">    @order = Order.find(params[:id])</code>
         </li>
@@ -4899,8 +4899,8 @@
           <code class="ruby">  def initialize(initial_contents)</code>
         </li>
       
-        <li class="covered" data-hits="409" data-linenumber="5">
-          <span class="hits">409</span>
+        <li class="covered" data-hits="410" data-linenumber="5">
+          <span class="hits">410</span>
           
           <code class="ruby">    @contents = initial_contents || Hash.new(0)</code>
         </li>
@@ -4923,8 +4923,8 @@
           <code class="ruby">  def total_count</code>
         </li>
       
-        <li class="covered" data-hits="164" data-linenumber="9">
-          <span class="hits">164</span>
+        <li class="covered" data-hits="165" data-linenumber="9">
+          <span class="hits">165</span>
           
           <code class="ruby">    @contents.values.sum</code>
         </li>
@@ -5675,8 +5675,8 @@
           <code class="ruby">  def last_update</code>
         </li>
       
-        <li class="covered" data-hits="20" data-linenumber="38">
-          <span class="hits">20</span>
+        <li class="covered" data-hits="21" data-linenumber="38">
+          <span class="hits">21</span>
           
           <code class="ruby">    order_items.maximum(:updated_at)</code>
         </li>
@@ -5699,8 +5699,8 @@
           <code class="ruby">  def total_item_count</code>
         </li>
       
-        <li class="covered" data-hits="20" data-linenumber="42">
-          <span class="hits">20</span>
+        <li class="covered" data-hits="21" data-linenumber="42">
+          <span class="hits">21</span>
           
           <code class="ruby">    order_items.sum(:quantity)</code>
         </li>
@@ -5723,14 +5723,14 @@
           <code class="ruby">  def total_cost</code>
         </li>
       
-        <li class="covered" data-hits="20" data-linenumber="46">
-          <span class="hits">20</span>
+        <li class="covered" data-hits="21" data-linenumber="46">
+          <span class="hits">21</span>
           
           <code class="ruby">    oi = order_items.pluck(&quot;sum(quantity*price)&quot;)</code>
         </li>
       
-        <li class="covered" data-hits="20" data-linenumber="47">
-          <span class="hits">20</span>
+        <li class="covered" data-hits="21" data-linenumber="47">
+          <span class="hits">21</span>
           
           <code class="ruby">    oi.sum</code>
         </li>
@@ -6072,8 +6072,8 @@
           <code class="ruby">  def subtotal</code>
         </li>
       
-        <li class="covered" data-hits="19" data-linenumber="15">
-          <span class="hits">19</span>
+        <li class="covered" data-hits="21" data-linenumber="15">
+          <span class="hits">21</span>
           
           <code class="ruby">    quantity * price</code>
         </li>
