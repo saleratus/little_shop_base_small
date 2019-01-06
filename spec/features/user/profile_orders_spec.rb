@@ -152,7 +152,24 @@ RSpec.describe 'Profile Orders page', type: :feature do
         click_button('Rate this item')
         expect(current_path).to eq(new_profile_rating_path)
 
+        title = 'Wonderful Product'
+        description = 'This product is truly wonderful'
+        score = 5
 
+        fill_in :rating_title, with: title
+        fill_in :rating_description, with: description
+        fill_in :rating_score, with: score
+        click_button 'Create Rating'
+
+        expect(current_path).to eq(profile_order_path)
+
+        expect(page).to have_content("Your rating has been added!")
+        rating = Rating.last
+        within "#oitem-#{@oi_2.id}" do
+          expect(page).to have_content(title)
+          expect(page).to have_content(description)
+          expect(page).to have_content("Score: #{rating.score}")
+        end
 
         #Confirm that oi_1 can be edited by going to the EDIT RATING LINK
         #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
