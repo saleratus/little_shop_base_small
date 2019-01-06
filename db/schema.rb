@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181223155152) do
+ActiveRecord::Schema.define(version: 20190104183905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,8 +36,10 @@ ActiveRecord::Schema.define(version: 20181223155152) do
     t.boolean "fulfilled", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "rating_id"
     t.index ["item_id"], name: "index_order_items_on_item_id"
     t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["rating_id"], name: "index_order_items_on_rating_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -46,6 +48,16 @@ ActiveRecord::Schema.define(version: 20181223155152) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "ratings", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.integer "score"
+    t.bigint "order_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_item_id"], name: "index_ratings_on_order_item_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -68,5 +80,7 @@ ActiveRecord::Schema.define(version: 20181223155152) do
   add_foreign_key "items", "users", column: "merchant_id"
   add_foreign_key "order_items", "items"
   add_foreign_key "order_items", "orders"
+  add_foreign_key "order_items", "ratings"
   add_foreign_key "orders", "users"
+  add_foreign_key "ratings", "order_items"
 end
