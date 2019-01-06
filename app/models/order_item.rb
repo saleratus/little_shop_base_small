@@ -14,4 +14,13 @@ class OrderItem < ApplicationRecord
   def subtotal
     quantity * price
   end
+
+  def has_enabled_rating?
+    if Rating.where('ratings.order_item_id = ? and ratings.enabled = ?', id, true) != []
+      true
+    else
+      false
+    end
+  end
+
 end

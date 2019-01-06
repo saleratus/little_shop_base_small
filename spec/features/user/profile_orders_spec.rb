@@ -126,12 +126,14 @@ RSpec.describe 'Profile Orders page', type: :feature do
         #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this PENDING order
         visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
         expect(page).to_not have_link('Rate this item')
+        expect(page).to_not have_link('Edit rating')
 
         #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this CANCELLED order
         @order.status = :cancelled
         @order.save
         visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
         expect(page).to_not have_link('Rate this item')
+        expect(page).to_not have_link('Edit rating')
 
         #Visit Order 1 page and confirm that this FULFILLED order has appropriate links for RATED and NON-RATED items
         @order.status = :completed
@@ -139,14 +141,19 @@ RSpec.describe 'Profile Orders page', type: :feature do
         @rating_1 = create(:rating, order_item: @oi_1, score: 3)
         visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
         within "#oitem-#{@oi_1.id}" do
-          expect(page).to have_link('Edit rating')
+          expect(page).to have_button('Edit rating')
         end
         within "#oitem-#{@oi_2.id}" do
-          expect(page).to have_link('Rate this item')
+          expect(page).to have_button('Rate this item')
         end
 
         #ADDING AND EDITING RATINGS
         #Confirm that oi_2 can have a rating added by going to RATE THIS ITEM
+        click_button('Rate this item')
+        expect(current_path).to eq(new_profile_rating_path)
+
+
+
         #Confirm that oi_1 can be edited by going to the EDIT RATING LINK
         #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
 

@@ -23,5 +23,19 @@ RSpec.describe OrderItem, type: :model do
 
       expect(oi.subtotal).to eq(15)
     end
+
+    it '.has_enabled_rating?' do
+      oi = create(:order_item)
+      rating_1 = create(:rating, order_item: oi, enabled: true)
+      expect(oi.has_enabled_rating?).to be true
+
+      rating_1.enabled = false
+      rating_1.save
+      expect(oi.has_enabled_rating?).to be false
+
+      rating_2 = create(:rating, order_item: oi, enabled: true)
+      expect(oi.has_enabled_rating?).to be true
+    end
+
   end
 end
