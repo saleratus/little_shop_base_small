@@ -110,45 +110,53 @@ RSpec.describe 'Profile Orders page', type: :feature do
     describe 'has RATINGS functionality on Order Show Page' do
       before :each do
         yesterday = 1.day.ago
+        #pending order
         @order = create(:order, user: @user, created_at: yesterday)
         #fulfilled order item
         @oi_1 = create(:fulfilled_order_item, order: @order, item: @item_1, price: 2, quantity: 1, created_at: yesterday, updated_at: 2.hours.ago)
         #unfulfilled and unrated order item
-        @oi_2 = create(:order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+        @oi_2 = create(:fulfilled_order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
       end
       scenario 'when logged in as user' do
         @user.reload
         allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
-        visit profile_order_path(@order)
       end
       after :each do
-        #Visit Order 1 page and confirm that oi_1 has a RATE THIS ITEM link and oi_2 - which is unfulfilled - has content "not ratable"
+        ### PROPER RATINGS BUTTONS SHOULD SHOW ON PAGE ###
+        #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this PENDING order
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
+        expect(page).to_not have_link('Rate this item')
 
-        it 'has appropriate ratings links' do
-          within "#oitem-#{@oi_1.id}" do
-            expect(page).to have_content(@oi_1.item.name)
-          end
-          within "#oitem-#{@oi_2.id}" do
-            expect(page).to have_content(@oi_2.item.name)
-          end
+        #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this CANCELLED order
+        @order.status = :cancelled
+        @order.save
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
+        expect(page).to_not have_link('Rate this item')
+
+        #Visit Order 1 page and confirm that this FULFILLED order has appropriate links for RATED and NON-RATED items
+        @order.status = :completed
+        @order.save
+        @rating_1 = create(:rating, order_item: @oi_1, score: 3)
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
+        within "#oitem-#{@oi_1.id}" do
+          expect(page).to have_link('Edit rating')
+        end
+        within "#oitem-#{@oi_2.id}" do
+          expect(page).to have_link('Rate this item')
         end
 
-
-        #Change status of oi_2 to cancelled; confirm that it still has no rate this item link
-        #Change status of oi_2 to fulfilled; and give it a rating; confirm that it has an EDIT RATING link
-
-        #Confirm that oi_1 can have a rating added by going to RATE THIS ITEM
-        #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
+        #ADDING AND EDITING RATINGS
+        #Confirm that oi_2 can have a rating added by going to RATE THIS ITEM
         #Confirm that oi_1 can be edited by going to the EDIT RATING LINK
+        #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
 
         #Add another order for user_1 item_1, and confirm that the item can recive a new rating for this new order
-        #another order for our user that also contains item 1
         @order_2 = create(:order, user: @user, created_at: 2.days.ago)
         @oi_3 = create(:fulfilled_order_item, order: @order_2, item: @item_1, price: 2, quantity: 5, created_at: 2.days.ago, updated_at: 1.day.ago)
 
+        #AVERAGE RATINGS FUNCTIONALITY
         #Confirm that average ratins reflect the ratings for his users orders
         #Confirm that average ratings work when ratings by other users are in the system
-        #another order by a different user which also contains item 1 and a rating for that item
         @user_2 = create(:user)
         @order_other_user = create(:order, user: @user_2, created_at: 2.days.ago)
         @oi_4 = create(:fulfilled_order_item, order: @order_other_user, item: @item_1, price: 2, quantity: 5, created_at: 2.days.ago, updated_at: 1.day.ago)
