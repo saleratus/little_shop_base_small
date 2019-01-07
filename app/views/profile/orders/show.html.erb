@@ -14,10 +14,12 @@
     <%= tag.div id: "oitem-#{oitem.id}" do %>
       <%= render partial: "/profile/orders/order_item", locals: {oitem: oitem, img_width: 150} %>
       <% if @order.status == 'completed' %>
-        <% if oitem.has_enabled_rating? %>
-          <p><%= button_to 'Edit rating', edit_profile_rating_path(), method: :update %></p>
+        <% rating = oitem.enabled_rating %>
+        <% if rating %>
+          <%= "Your Rating: #{rating.title} #{rating.description} Score: #{rating.score}" %>
+          <p><%= button_to 'Edit rating', edit_profile_rating_path(oitem), method: :update %></p>
         <% else %>
-          <p><%= button_to 'Rate this item', new_profile_rating_path(), method: :get %></p>
+          <p><%= button_to 'Rate this item', new_profile_rating_path(order_item_id: oitem.id), method: :get %></p>
         <% end %>
       <% end %>
     <% end %>

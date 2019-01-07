@@ -15,12 +15,9 @@ class OrderItem < ApplicationRecord
     quantity * price
   end
 
-  def has_enabled_rating?
-    if Rating.where('ratings.order_item_id = ? and ratings.enabled = ?', id, true) != []
-      true
-    else
-      false
-    end
+  def enabled_rating
+    ratings = Rating.where('ratings.order_item_id = ? and ratings.enabled = ?', id, true)
+    ratings ? ratings.first : nil
   end
 
 end

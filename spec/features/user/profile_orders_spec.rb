@@ -161,13 +161,11 @@ RSpec.describe 'Profile Orders page', type: :feature do
         fill_in :rating_score, with: score
         click_button 'Create Rating'
 
-        expect(current_path).to eq(profile_order_path)
-
         expect(page).to have_content("Your rating has been added!")
         rating = Rating.last
         within "#oitem-#{@oi_2.id}" do
-          expect(page).to have_content(title)
-          expect(page).to have_content(description)
+          expect(page).to have_content(rating.title)
+          expect(page).to have_content(rating.description)
           expect(page).to have_content("Score: #{rating.score}")
         end
 

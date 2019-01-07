@@ -20,6 +20,7 @@
 <p><%= f.label :score %>
 <%= f.number_field :score, required: true %></p>
 
+<%= f.hidden_field :order_item_id, value: @order_item_id %>
 <p><%= f.submit %></p>
 
 <% end %>
