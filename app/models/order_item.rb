@@ -14,4 +14,10 @@ class OrderItem < ApplicationRecord
   def subtotal
     quantity * price
   end
+
+  def enabled_rating
+    ratings = Rating.where('ratings.order_item_id = ? and ratings.enabled = ?', id, true)
+    ratings ? ratings.first : nil
+  end
+
 end

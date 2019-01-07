@@ -103,6 +103,95 @@ RSpec.describe 'Profile Orders page', type: :feature do
         expect(page).to have_content("Total Cost: #{number_to_currency(@order.total_cost)}")
       end
     end
+
+
+
+
+    describe 'has RATINGS functionality on Order Show Page' do
+      before :each do
+        yesterday = 1.day.ago
+        #pending order
+        @order = create(:order, user: @user, created_at: yesterday)
+        #fulfilled order item
+        @oi_1 = create(:fulfilled_order_item, order: @order, item: @item_1, price: 2, quantity: 1, created_at: yesterday, updated_at: 2.hours.ago)
+        #unfulfilled and unrated order item
+        @oi_2 = create(:fulfilled_order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+      end
+      scenario 'when logged in as user' do
+        @user.reload
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
+      end
+      after :each do
+        ### PROPER RATINGS BUTTONS SHOULD SHOW ON PAGE ###
+        #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this PENDING order
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
+        expect(page).to_not have_link('Rate this item')
+        expect(page).to_not have_link('Edit rating')
+
+        #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this CANCELLED order
+        @order.status = :cancelled
+        @order.save
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
+        expect(page).to_not have_link('Rate this item')
+        expect(page).to_not have_link('Edit rating')
+
+        #Visit Order 1 page and confirm that this FULFILLED order has appropriate links for RATED and NON-RATED items
+        @order.status = :completed
+        @order.save
+        @rating_1 = create(:rating, order_item: @oi_1, score: 3)
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
+        within "#oitem-#{@oi_1.id}" do
+          expect(page).to have_button('Edit rating')
+        end
+        within "#oitem-#{@oi_2.id}" do
+          expect(page).to have_button('Rate this item')
+        end
+
+        #ADDING AND EDITING RATINGS
+        #Confirm that oi_2 can have a rating added by going to RATE THIS ITEM
+        click_button('Rate this item')
+        expect(current_path).to eq(new_profile_rating_path)
+
+        title = 'Wonderful Product'
+        description = 'This product is truly wonderful'
+        score = 5
+
+        fill_in :rating_title, with: title
+        fill_in :rating_description, with: description
+        fill_in :rating_score, with: score
+        click_button 'Create Rating'
+
+        expect(page).to have_content("Your rating has been added!")
+        rating = Rating.last
+        within "#oitem-#{@oi_2.id}" do
+          expect(page).to have_content(rating.title)
+          expect(page).to have_content(rating.description)
+          expect(page).to have_content("Score: #{rating.score}")
+        end
+
+        #Confirm that oi_1 can be edited by going to the EDIT RATING LINK
+        #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
+
+        #Add another order for user_1 item_1, and confirm that the item can recive a new rating for this new order
+        @order_2 = create(:order, user: @user, created_at: 2.days.ago)
+        @oi_3 = create(:fulfilled_order_item, order: @order_2, item: @item_1, price: 2, quantity: 5, created_at: 2.days.ago, updated_at: 1.day.ago)
+
+        #AVERAGE RATINGS FUNCTIONALITY
+        #Confirm that average ratins reflect the ratings for his users orders
+        #Confirm that average ratings work when ratings by other users are in the system
+        @user_2 = create(:user)
+        @order_other_user = create(:order, user: @user_2, created_at: 2.days.ago)
+        @oi_4 = create(:fulfilled_order_item, order: @order_other_user, item: @item_1, price: 2, quantity: 5, created_at: 2.days.ago, updated_at: 1.day.ago)
+        #Confirm that average ratings do not inclde disabled orders
+
+      end
+    end
+
+
+
+
+
+
     describe 'allows me to cancel an order that is not yet complete' do
       before :each do
         @item = create(:item, user: @merchant_1, inventory: 100)
