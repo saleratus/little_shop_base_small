@@ -167,7 +167,6 @@ RSpec.describe 'Profile Orders page', type: :feature do
           expect(page).to have_button('Edit rating')
         end
 
-
         #Confirm that oi_1 can be edited by going to the EDIT RATING LINK
         within "#oitem-#{@oi_1.id}" do
           click_button 'Edit rating'
@@ -203,11 +202,6 @@ RSpec.describe 'Profile Orders page', type: :feature do
 
       end
     end
-
-
-
-
-
 
     describe 'allows me to cancel an order that is not yet complete' do
       before :each do
