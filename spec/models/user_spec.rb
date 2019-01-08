@@ -77,6 +77,148 @@ RSpec.describe User, type: :model do
         expect(aft[0..7]).to eq('00:01:00')
       end
     end
+    describe 'more merchant stats class methods' do
+      before :each do
+        user = create(:user)
+        @merchant_1 = create(:merchant)
+        @merchant_2 = create(:merchant)
+        @merchant_3 = create(:merchant)
+        @merchant_4 = create(:merchant)
+        @merchant_5 = create(:merchant)
+
+        item_1 = create(:item, user: @merchant_1)
+        item_2 = create(:item, user: @merchant_2)
+        item_3 = create(:item, user: @merchant_3)
+        item_4 = create(:item, user: @merchant_4)
+        item_5 = create(:item, user: @merchant_5)
+
+        item_6 = create(:item, user: @merchant_3)
+
+        #ORDERS WITH OIs COMPLETED LAST MONTH
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_2, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_3, price: 3, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 4, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 5, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        #Extra item for merchant 3
+        create(:fulfilled_order_item, order: order, item: item_6, price: 5, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_2, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_3, price: 3, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 4, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        #Extra item for merchant 3
+        create(:fulfilled_order_item, order: order, item: item_6, price: 5, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_2, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_3, price: 3, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        #Extra item for merchant 3
+        create(:fulfilled_order_item, order: order, item: item_6, price: 5, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_2, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        #ORDERS PENDING -- All crediting merchant 4
+        order = create(:order, user: user)
+        create(:order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:order, user: user)
+        create(:order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:order, user: user)
+        create(:order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:order, user: user)
+        create(:order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        #ORDERS THAT DON'T COUNT FROM LAST MONTH
+        order = create(:cancelled_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:cancelled_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:cancelled_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:cancelled_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+        order = create(:cancelled_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 1, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 2, quantity: 1, created_at: (1.month.ago - 3.days), updated_at: 1.month.ago)
+
+
+        #ORDERS WITH OIs COMPLETED THIS MONTH
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 1, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 2, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_3, price: 3, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_2, price: 4, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_1, price: 5, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 1, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 2, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_3, price: 3, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_2, price: 4, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 1, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 2, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_3, price: 3, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 1, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        create(:fulfilled_order_item, order: order, item: item_4, price: 2, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+
+        order = create(:completed_order, user: user)
+        create(:fulfilled_order_item, order: order, item: item_5, price: 1, quantity: 1, created_at: 2.days.ago, updated_at: DateTime.now)
+        @this_month = DateTime.current.month
+        @this_year = DateTime.current.year
+        @last_month = 1.month.ago.month
+        @last_month_year = 1.month.ago.year
+        @count = 3
+      end
+      describe '.top_item_merchants_by_monthyear' do
+        it 'returns n users with the most items sold for a month' do
+          #Order is completed, and order_item updated in that month--a sum of items for merchants
+          merchants = User.top_item_merchants_by_monthyear(@count, @last_month, @last_month_year)
+          expect(merchants).to eq([@merchant_3, @merchant_1, @merchant_2])
+        end
+      end
+      describe '.top_order_merchants_by_monthyear' do
+        it 'returns n users fulfilling most orders for a month' do
+          #Order is non-cancelled, order_item updated in that month--an order count for merchants
+          merchants = User.top_order_merchants_by_monthyear(@count, @last_month, @last_month_year)
+          expect(merchants).to eq([@merchant_4, @merchant_1, @merchant_2])
+        end
+      end
+      xdescribe '.fastest_merchants_by_state' do
+        it 'returns n users with fastest fulfillment to my state' do
+        end
+      end
+      xdescribe '.fastest_merchants_by_city' do
+        it 'returns n users with fastest fulfillment to my city' do
+        end
+      end
+    end
   end
 
   describe 'instance methods' do
