@@ -36,6 +36,24 @@ class User < ApplicationRecord
     merchant_fulfillment_times(:desc, 3)
   end
 
+  def self.top_item_merchants_by_monthyear(count, month, year)
+    User.joins('inner join items i on i.merchant_id=users.id inner join order_items oi on oi.item_id=i.id inner join orders o on o.id=oi.order_id')
+      .select('users.*, SUM(oi.quantity) AS item_count')
+      .where('o.status = 1 AND extract(year from oi.updated_at) = ? AND extract(month from oi.updated_at) = ?', year, month)
+      .group(:id)
+      .order('item_count desc')
+      .limit(count)
+  end
+
+  def self.top_order_merchants_by_monthyear(count, month, year)
+    User.joins('inner join items i on i.merchant_id=users.id inner join order_items oi on oi.item_id=i.id inner join orders o on o.id=oi.order_id')
+      .select('users.*, count(distinct o.id) AS order_count')
+      .where('o.status != 2 AND extract(year from oi.updated_at) = ? AND extract(month from oi.updated_at) = ?', year, month)
+      .group(:id)
+      .order('order_count desc')
+      .limit(count)
+  end
+
   def my_pending_orders
     Order.joins(order_items: :item)
       .where("items.merchant_id=? AND orders.status=? AND order_items.fulfilled=?", self.id, 0, false)
