@@ -17,7 +17,7 @@
         <% rating = oitem.enabled_rating %>
         <% if rating %>
           <%= "Your Rating: #{rating.title} #{rating.description} Score: #{rating.score}" %>
-          <p><%= button_to 'Edit rating', edit_profile_rating_path(oitem), method: :update %></p>
+          <p><%= button_to 'Edit rating', edit_profile_rating_path(rating), method: :get %></p>
         <% else %>
           <p><%= button_to 'Rate this item', new_profile_rating_path(order_item_id: oitem.id), method: :get %></p>
         <% end %>

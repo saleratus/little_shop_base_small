@@ -104,9 +104,6 @@ RSpec.describe 'Profile Orders page', type: :feature do
       end
     end
 
-
-
-
     describe 'has RATINGS functionality on Order Show Page' do
       before :each do
         yesterday = 1.day.ago
@@ -164,12 +161,32 @@ RSpec.describe 'Profile Orders page', type: :feature do
         expect(page).to have_content("Your rating has been added!")
         rating = Rating.last
         within "#oitem-#{@oi_2.id}" do
-          expect(page).to have_content(rating.title)
-          expect(page).to have_content(rating.description)
-          expect(page).to have_content("Score: #{rating.score}")
+          expect(page).to have_content(title)
+          expect(page).to have_content(description)
+          expect(page).to have_content("Score: #{score}")
+          expect(page).to have_button('Edit rating')
         end
 
+
         #Confirm that oi_1 can be edited by going to the EDIT RATING LINK
+        within "#oitem-#{@oi_1.id}" do
+          click_button 'Edit rating'
+        end
+        title = 'Meh'
+        score = 1
+        fill_in :rating_title, with: title
+        fill_in :rating_score, with: score
+        click_button 'Update Rating'
+
+        expect(page).to have_content("Your changes were recorded!")
+        rating = @oi_1.enabled_rating
+        within "#oitem-#{@oi_1.id}" do
+          expect(page).to have_content(title)
+          expect(page).to have_content(rating.description)
+          expect(page).to have_content("Score: #{score}")
+          expect(page).to have_button('Edit rating')
+        end
+
         #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
 
         #Add another order for user_1 item_1, and confirm that the item can recive a new rating for this new order
