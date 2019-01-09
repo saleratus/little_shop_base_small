@@ -17,9 +17,7 @@ class Profile::RatingsController < ApplicationController
     @rating = Rating.create(rating_params)
     if @rating.save
       flash[:success] = "Your rating has been added!"
-      order_item = OrderItem.find(rating_params[:order_item_id])
-      order = Order.find(order_item.order_id)
-      redirect_to profile_order_path(order) and return
+      redirect_to profile_order_path(@rating.find_order_for) and return
     end
     @form_path = [:profile, @rating]
     render :new
@@ -33,12 +31,16 @@ class Profile::RatingsController < ApplicationController
     @rating.update(rating_params)
     if @rating.save
       flash[:success] = "Your changes were recorded!"
-      order_item = OrderItem.find(rating_params[:order_item_id])
-      order = Order.find(order_item.order_id)
-      redirect_to profile_order_path(order) and return
+      redirect_to profile_order_path(@rating.find_order_for) and return
     end
     @form_path = [:profile, @rating]
     render :edit
+  end
+
+  def disable
+    rating = Rating.find(params[:id])
+    rating.update(enabled: false)
+    redirect_to profile_order_path(rating.find_order_for)
   end
 
   private
