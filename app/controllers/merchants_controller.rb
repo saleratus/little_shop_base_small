@@ -8,9 +8,20 @@ class MerchantsController < ApplicationController
     end
     @merchants = User.where(flags)
 
+    this_month = DateTime.current.month
+    this_year = DateTime.current.year
+    last_month = 1.month.ago.month
+    last_month_year = 1.month.ago.year
+
     @top_3_revenue_merchants = User.top_3_revenue_merchants
     @top_3_fulfilling_merchants = User.top_3_fulfilling_merchants
     @bottom_3_fulfilling_merchants = User.bottom_3_fulfilling_merchants
+
+    @top_10_quantity_merchants_this_month = User.top_item_merchants_by_monthyear(3, @this_month, @this_year)
+    @top_10_quantity_merchants_last_month = User.top_item_merchants_by_monthyear(3, @last_month, @last_month_year)
+    @top_10_order_merchants_this_month = User.top_order_merchants_by_monthyear(3, @this_month, @this_year)
+    @top_10_order_merchants_last_month = User.top_order_merchants_by_monthyear(3, @last_month, @last_month_year)
+
     @top_3_states = Order.top_3_states
     @top_3_cities = Order.top_3_cities
     @top_3_quantity_orders = Order.top_3_quantity_orders

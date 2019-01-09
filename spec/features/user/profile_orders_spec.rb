@@ -117,15 +117,15 @@ RSpec.describe 'Profile Orders page', type: :feature do
         allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
         #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this PENDING order
         visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
-        expect(page).to_not have_link('Rate this item')
-        expect(page).to_not have_link('Edit rating')
+        expect(page).to_not have_link('Rate this Item')
+        expect(page).to_not have_link('Edit Rating')
 
         #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this CANCELLED order
         @order.status = :cancelled
         @order.save
         visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
-        expect(page).to_not have_link('Rate this item')
-        expect(page).to_not have_link('Edit rating')
+        expect(page).to_not have_link('Rate this Item')
+        expect(page).to_not have_link('Edit Rating')
 
         #Visit Order 1 page and confirm that this COMPLETED order has appropriate links for RATED and NON-RATED items
         @order.status = :completed
@@ -133,10 +133,10 @@ RSpec.describe 'Profile Orders page', type: :feature do
         @rating_1 = create(:rating, order_item: @oi_1, score: 3)
         visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
         within "#oitem-#{@oi_1.id}" do
-          expect(page).to have_button('Edit rating')
+          expect(page).to have_button('Edit Rating')
         end
         within "#oitem-#{@oi_2.id}" do
-          expect(page).to have_button('Rate this item')
+          expect(page).to have_button('Rate this Item')
         end
       end
 
@@ -156,7 +156,7 @@ RSpec.describe 'Profile Orders page', type: :feature do
 
         #Confirm that oi_2 can have a rating added by going to RATE THIS ITEM
         within "#oitem-#{@oi_2.id}" do
-          click_button('Rate this item')
+          click_button('Rate this Item')
         end
 
         expect(current_path).to eq(new_profile_rating_path)
@@ -176,12 +176,12 @@ RSpec.describe 'Profile Orders page', type: :feature do
           expect(page).to have_content(title)
           expect(page).to have_content(description)
           expect(page).to have_content("Score: #{score}")
-          expect(page).to have_button('Edit rating')
+          expect(page).to have_button('Edit Rating')
         end
 
         #Confirm that oi_1 can be edited by going to the EDIT RATING LINK
         within "#oitem-#{@oi_1.id}" do
-          click_button 'Edit rating'
+          click_button 'Edit Rating'
         end
         title = 'Meh'
         score = 1
@@ -194,8 +194,8 @@ RSpec.describe 'Profile Orders page', type: :feature do
         within "#oitem-#{@oi_1.id}" do
           expect(page).to have_content(title)
           expect(page).to have_content(rating.description)
-          expect(page).to have_content("Score: #{score}")
-          expect(page).to have_button('Edit rating')
+          expect(page).to have_content("Your Score: #{score}")
+          expect(page).to have_button('Edit Rating')
         end
       end
       it 'allows disabling a rating and then re-rating that item' do
@@ -215,11 +215,11 @@ RSpec.describe 'Profile Orders page', type: :feature do
         #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
 
         within "#oitem-#{@oi_1.id}" do
-          click_button 'Delete rating'
+          click_button 'Delete Rating'
         end
 
         within "#oitem-#{@oi_1.id}" do
-          click_button 'Rate this item'
+          click_button 'Rate this Item'
         end
 
         title = 'Terrible Product'
@@ -237,7 +237,7 @@ RSpec.describe 'Profile Orders page', type: :feature do
           expect(page).to have_content(title)
           expect(page).to have_content(description)
           expect(page).to have_content("Score: #{score}")
-          expect(page).to have_button('Edit rating')
+          expect(page).to have_button('Edit Rating')
         end
       end
       it 'can leave ratings for the same item multiple times in different orders' do
@@ -258,7 +258,7 @@ RSpec.describe 'Profile Orders page', type: :feature do
         visit @am_admin ? admin_user_order_path(@user, @order_2) : profile_order_path(@order_2)
 
         within "#oitem-#{@oi_3.id}" do
-          click_button 'Rate this item'
+          click_button 'Rate this Item'
         end
 
         title = 'Alternate Review'
@@ -275,8 +275,8 @@ RSpec.describe 'Profile Orders page', type: :feature do
         within "#oitem-#{@oi_3.id}" do
           expect(page).to have_content(title)
           expect(page).to have_content(description)
-          expect(page).to have_content("Score: #{score}")
-          expect(page).to have_button('Edit rating')
+          expect(page).to have_content("Your Score: #{score}")
+          expect(page).to have_button('Edit Rating')
         end
       end
 
@@ -305,13 +305,13 @@ RSpec.describe 'Profile Orders page', type: :feature do
         visit @am_admin ? admin_user_order_path(@user, @order_2) : profile_order_path(@order)
 
         within "#oitem-#{@oi_1.id}" do
-          expect(page).to have_content("Average Score: #{@oi_1.avg_rating_score}")
+          expect(page).to have_content("Average User Score: #{@oi_1.item.avg_rating_score}")
         end
         within "#oitem-#{@oi_2.id}" do
-          expect(page).to have_content("Average Score: #{@oi_2.avg_rating_score}")
+          expect(page).to have_content("Average User Score: #{@oi_2.item.avg_rating_score}")
         end
         within "#oitem-#{@oi_5.id}" do
-          expect(page).to have_content("Average Score: Not Rated")
+          expect(page).to have_content("Average User Score: Not Rated")
         end
       end
     end

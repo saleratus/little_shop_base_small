@@ -38,6 +38,13 @@ class Item < ApplicationRecord
     end
   end
 
+  def avg_rating_score
+    average_score = Rating.joins(:order_item)
+    .where('ratings.enabled = ? and order_items.item_id = ?', true, id)
+    .average(:score)
+    average_score ? average_score.round(2).to_s : "Not Rated"
+  end
+
   def ever_ordered?
     OrderItem.find_by_item_id(self.id) !=  nil
   end
