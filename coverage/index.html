@@ -14,7 +14,7 @@
       <img src="./assets/0.10.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" style="display:none;">
-      <div class="timestamp">Generated <abbr class="timeago" title="2019-01-09T05:58:39-07:00">2019-01-09T05:58:39-07:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2019-01-09T06:32:37-07:00">2019-01-09T06:32:37-07:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -25,15 +25,15 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         12.64
+         12.91
        </span>
     </span> hits/line)
   </h2>
   <a name="AllFiles"></a>
   <div>
     <b>27</b> files in total.
-    <b>554</b> relevant lines. 
-    <span class="green"><b>550</b> lines covered</span> and
+    <b>553</b> relevant lines. 
+    <span class="green"><b>549</b> lines covered</span> and
     <span class="red"><b>4</b> lines missed </span>
   </div>
   <table class="file_list">
@@ -273,11 +273,11 @@
       <tr>
         <td class="strong"><a href="#e0bae6030fe5c858151eab84e266191d78f47f06" class="src_link" title="app/models/item.rb">app/models/item.rb</a></td>
         <td class="green strong">100.0 %</td>
-        <td>44</td>
-        <td>19</td>
-        <td>19</td>
+        <td>51</td>
+        <td>22</td>
+        <td>22</td>
         <td>0</td>
-        <td>19.8</td>
+        <td>29.5</td>
       </tr>
       
       <tr>
@@ -293,11 +293,11 @@
       <tr>
         <td class="strong"><a href="#989510ac8a059ce13160265238899076dd6fb29c" class="src_link" title="app/models/order_item.rb">app/models/order_item.rb</a></td>
         <td class="green strong">100.0 %</td>
-        <td>32</td>
-        <td>15</td>
-        <td>15</td>
+        <td>24</td>
+        <td>11</td>
+        <td>11</td>
         <td>0</td>
-        <td>15.9</td>
+        <td>9.1</td>
       </tr>
       
       <tr>
@@ -597,15 +597,15 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         16.96
+         18.04
        </span>
     </span> hits/line)
   </h2>
   <a name="Models"></a>
   <div>
     <b>7</b> files in total.
-    <b>141</b> relevant lines. 
-    <span class="green"><b>141</b> lines covered</span> and
+    <b>140</b> relevant lines. 
+    <span class="green"><b>140</b> lines covered</span> and
     <span class="red"><b>0</b> lines missed </span>
   </div>
   <table class="file_list">
@@ -645,11 +645,11 @@
       <tr>
         <td class="strong"><a href="#e0bae6030fe5c858151eab84e266191d78f47f06" class="src_link" title="app/models/item.rb">app/models/item.rb</a></td>
         <td class="green strong">100.0 %</td>
-        <td>44</td>
-        <td>19</td>
-        <td>19</td>
+        <td>51</td>
+        <td>22</td>
+        <td>22</td>
         <td>0</td>
-        <td>19.8</td>
+        <td>29.5</td>
       </tr>
       
       <tr>
@@ -665,11 +665,11 @@
       <tr>
         <td class="strong"><a href="#989510ac8a059ce13160265238899076dd6fb29c" class="src_link" title="app/models/order_item.rb">app/models/order_item.rb</a></td>
         <td class="green strong">100.0 %</td>
-        <td>32</td>
-        <td>15</td>
-        <td>15</td>
+        <td>24</td>
+        <td>11</td>
+        <td>11</td>
         <td>0</td>
-        <td>15.9</td>
+        <td>9.1</td>
       </tr>
       
       <tr>
@@ -5512,8 +5512,8 @@
     <h3>app/models/item.rb</h3>
     <h4><span class="green">100.0 %</span> covered</h4>
     <div>
-      <b>19</b> relevant lines. 
-      <span class="green"><b>19</b> lines covered</span> and
+      <b>22</b> relevant lines. 
+      <span class="green"><b>22</b> lines covered</span> and
       <span class="red"><b>0</b> lines missed.</span>
     </div>
   </div>
@@ -5764,22 +5764,64 @@
         <li class="covered" data-hits="1" data-linenumber="41">
           <span class="hits">1</span>
           
-          <code class="ruby">  def ever_ordered?</code>
+          <code class="ruby">  def avg_rating_score</code>
         </li>
       
-        <li class="covered" data-hits="140" data-linenumber="42">
-          <span class="hits">140</span>
+        <li class="covered" data-hits="136" data-linenumber="42">
+          <span class="hits">136</span>
           
-          <code class="ruby">    OrderItem.find_by_item_id(self.id) !=  nil</code>
+          <code class="ruby">    average_score = Rating.joins(:order_item)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="43">
           
           
-          <code class="ruby">  end</code>
+          <code class="ruby">    .where(&#39;ratings.enabled = ? and order_items.item_id = ?&#39;, true, id)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="44">
+          
+          
+          <code class="ruby">    .average(:score)</code>
+        </li>
+      
+        <li class="covered" data-hits="136" data-linenumber="45">
+          <span class="hits">136</span>
+          
+          <code class="ruby">    average_score ? average_score.round(2).to_s : &quot;Not Rated&quot;</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="46">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="47">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="48">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def ever_ordered?</code>
+        </li>
+      
+        <li class="covered" data-hits="140" data-linenumber="49">
+          <span class="hits">140</span>
+          
+          <code class="ruby">    OrderItem.find_by_item_id(self.id) !=  nil</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="50">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="51">
           
           
           <code class="ruby">end</code>
@@ -6330,8 +6372,8 @@
     <h3>app/models/order_item.rb</h3>
     <h4><span class="green">100.0 %</span> covered</h4>
     <div>
-      <b>15</b> relevant lines. 
-      <span class="green"><b>15</b> lines covered</span> and
+      <b>11</b> relevant lines. 
+      <span class="green"><b>11</b> lines covered</span> and
       <span class="red"><b>0</b> lines missed.</span>
     </div>
   </div>
@@ -6477,55 +6519,7 @@
           <code class="ruby"></code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="24">
-          <span class="hits">1</span>
-          
-          <code class="ruby">  def avg_rating_score</code>
-        </li>
-      
-        <li class="covered" data-hits="46" data-linenumber="25">
-          <span class="hits">46</span>
-          
-          <code class="ruby">    item_id = self.item_id #not necesary; just for clarity</code>
-        </li>
-      
-        <li class="covered" data-hits="46" data-linenumber="26">
-          <span class="hits">46</span>
-          
-          <code class="ruby">    average_score = Rating.joins(:order_item)</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="27">
-          
-          
-          <code class="ruby">    .where(&#39;ratings.enabled = ? and order_items.item_id = ?&#39;, true, item_id)</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="28">
-          
-          
-          <code class="ruby">    .average(:score)</code>
-        </li>
-      
-        <li class="covered" data-hits="46" data-linenumber="29">
-          <span class="hits">46</span>
-          
-          <code class="ruby">    average_score ? average_score.round(2).to_s : &quot;Not Rated&quot;</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="30">
-          
-          
-          <code class="ruby">  end</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="31">
-          
-          
-          <code class="ruby"></code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="32">
+        <li class="never" data-hits="" data-linenumber="24">
           
           
           <code class="ruby">end</code>

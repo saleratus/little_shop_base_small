@@ -43,6 +43,7 @@ RSpec.describe 'Item show page', type: :feature do
       within "#item-#{@item.id}" do
         expect(page).to have_content(@item.name)
         expect(page.find("#item-#{@item.id}-image")['src']).to have_content(@item.image)
+        expect(page).to have_content("Average User Score: #{@item.avg_rating_score}")
         expect(page).to have_content("Sold by: #{@item.user.name}")
         expect(page).to have_content("Price: #{number_to_currency(@item.price)}")
         expect(page).to have_content("In stock: #{@item.inventory}")

@@ -305,10 +305,10 @@ RSpec.describe 'Profile Orders page', type: :feature do
         visit @am_admin ? admin_user_order_path(@user, @order_2) : profile_order_path(@order)
 
         within "#oitem-#{@oi_1.id}" do
-          expect(page).to have_content("Average User Score: #{@oi_1.avg_rating_score}")
+          expect(page).to have_content("Average User Score: #{@oi_1.item.avg_rating_score}")
         end
         within "#oitem-#{@oi_2.id}" do
-          expect(page).to have_content("Average User Score: #{@oi_2.avg_rating_score}")
+          expect(page).to have_content("Average User Score: #{@oi_2.item.avg_rating_score}")
         end
         within "#oitem-#{@oi_5.id}" do
           expect(page).to have_content("Average User Score: Not Rated")
