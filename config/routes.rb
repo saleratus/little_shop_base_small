@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   namespace :profile do
     resources :orders, only: [:index, :create, :show, :destroy]
     resources :ratings, only: [:new, :edit, :create, :update]
+    patch '/ratings/:id/disable', to: 'ratings#disable', as: 'disable_rating'
   end
 
   post '/admin/users/:merchant_id/items', to: 'dashboard/items#create', as: 'admin_user_items'

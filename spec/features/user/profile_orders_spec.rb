@@ -104,8 +104,8 @@ RSpec.describe 'Profile Orders page', type: :feature do
       end
     end
 
-    describe 'has RATINGS functionality on Order Show Page' do
-      before :each do
+    describe 'RATINGS functionality' do
+      it 'shows appropriate buttons for Ratings functionality' do
         yesterday = 1.day.ago
         #pending order
         @order = create(:order, user: @user, created_at: yesterday)
@@ -113,13 +113,8 @@ RSpec.describe 'Profile Orders page', type: :feature do
         @oi_1 = create(:fulfilled_order_item, order: @order, item: @item_1, price: 2, quantity: 1, created_at: yesterday, updated_at: 2.hours.ago)
         #unfulfilled and unrated order item
         @oi_2 = create(:fulfilled_order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
-      end
-      scenario 'when logged in as user' do
         @user.reload
         allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
-      end
-      after :each do
-        ### PROPER RATINGS BUTTONS SHOULD SHOW ON PAGE ###
         #Visit Order_1 page and confirm that no RATE THIS ITEM LINKS are shown for this PENDING order
         visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
         expect(page).to_not have_link('Rate this item')
@@ -132,7 +127,7 @@ RSpec.describe 'Profile Orders page', type: :feature do
         expect(page).to_not have_link('Rate this item')
         expect(page).to_not have_link('Edit rating')
 
-        #Visit Order 1 page and confirm that this FULFILLED order has appropriate links for RATED and NON-RATED items
+        #Visit Order 1 page and confirm that this COMPLETED order has appropriate links for RATED and NON-RATED items
         @order.status = :completed
         @order.save
         @rating_1 = create(:rating, order_item: @oi_1, score: 3)
@@ -143,10 +138,27 @@ RSpec.describe 'Profile Orders page', type: :feature do
         within "#oitem-#{@oi_2.id}" do
           expect(page).to have_button('Rate this item')
         end
+      end
 
-        #ADDING AND EDITING RATINGS
+      it 'allows adding and editing ratings' do
+        yesterday = 1.day.ago
+        #pending order
+        @order = create(:completed_order, user: @user, created_at: yesterday)
+        #fulfilled order item
+        @oi_1 = create(:fulfilled_order_item, order: @order, item: @item_1, price: 2, quantity: 1, created_at: yesterday, updated_at: 2.hours.ago)
+        #unfulfilled and unrated order item
+        @oi_2 = create(:fulfilled_order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+        @rating_1 = create(:rating, order_item: @oi_1, score: 3)
+
+        @user.reload
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
+
         #Confirm that oi_2 can have a rating added by going to RATE THIS ITEM
-        click_button('Rate this item')
+        within "#oitem-#{@oi_2.id}" do
+          click_button('Rate this item')
+        end
+
         expect(current_path).to eq(new_profile_rating_path)
 
         title = 'Wonderful Product'
@@ -185,21 +197,122 @@ RSpec.describe 'Profile Orders page', type: :feature do
           expect(page).to have_content("Score: #{score}")
           expect(page).to have_button('Edit rating')
         end
+      end
+      it 'allows disabling a rating and then re-rating that item' do
+        yesterday = 1.day.ago
+        #pending order
+        @order = create(:completed_order, user: @user, created_at: yesterday)
+        #fulfilled order item
+        @oi_1 = create(:fulfilled_order_item, order: @order, item: @item_1, price: 2, quantity: 1, created_at: yesterday, updated_at: 2.hours.ago)
+        #unfulfilled and unrated order item
+        @oi_2 = create(:fulfilled_order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+        @rating_1 = create(:rating, order_item: @oi_1, score: 3)
+
+        @user.reload
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
+        visit @am_admin ? admin_user_order_path(@user, @order) : profile_order_path(@order)
 
         #confirm oi_1s rating can be disabled, and a rating can then be added by going to RATE THIS ITEM
 
+        within "#oitem-#{@oi_1.id}" do
+          click_button 'Delete rating'
+        end
+
+        within "#oitem-#{@oi_1.id}" do
+          click_button 'Rate this item'
+        end
+
+        title = 'Terrible Product'
+        description = 'This product is truly terrible'
+        score = 1
+
+        fill_in :rating_title, with: title
+        fill_in :rating_description, with: description
+        fill_in :rating_score, with: score
+        click_button 'Create Rating'
+
+        expect(page).to have_content("Your rating has been added!")
+        rating = Rating.last
+        within "#oitem-#{@oi_1.id}" do
+          expect(page).to have_content(title)
+          expect(page).to have_content(description)
+          expect(page).to have_content("Score: #{score}")
+          expect(page).to have_button('Edit rating')
+        end
+      end
+      it 'can leave ratings for the same item multiple times in different orders' do
+        yesterday = 1.day.ago
+        #pending order
+        @order = create(:completed_order, user: @user, created_at: yesterday)
+        #fulfilled order item
+        @oi_1 = create(:fulfilled_order_item, order: @order, item: @item_1, price: 2, quantity: 1, created_at: yesterday, updated_at: 2.hours.ago)
+        #unfulfilled and unrated order item
+        @oi_2 = create(:fulfilled_order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+        @rating_1 = create(:rating, order_item: @oi_1, score: 3)
         #Add another order for user_1 item_1, and confirm that the item can recive a new rating for this new order
-        @order_2 = create(:order, user: @user, created_at: 2.days.ago)
+        @order_2 = create(:completed_order, user: @user, created_at: 2.days.ago)
         @oi_3 = create(:fulfilled_order_item, order: @order_2, item: @item_1, price: 2, quantity: 5, created_at: 2.days.ago, updated_at: 1.day.ago)
 
-        #AVERAGE RATINGS FUNCTIONALITY
-        #Confirm that average ratins reflect the ratings for his users orders
-        #Confirm that average ratings work when ratings by other users are in the system
+        @user.reload
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
+        visit @am_admin ? admin_user_order_path(@user, @order_2) : profile_order_path(@order_2)
+
+        within "#oitem-#{@oi_3.id}" do
+          click_button 'Rate this item'
+        end
+
+        title = 'Alternate Review'
+        description = 'Alternate Description'
+        score = 3
+
+        fill_in :rating_title, with: title
+        fill_in :rating_description, with: description
+        fill_in :rating_score, with: score
+        click_button 'Create Rating'
+
+        expect(page).to have_content("Your rating has been added!")
+        rating = Rating.last
+        within "#oitem-#{@oi_3.id}" do
+          expect(page).to have_content(title)
+          expect(page).to have_content(description)
+          expect(page).to have_content("Score: #{score}")
+          expect(page).to have_button('Edit rating')
+        end
+      end
+
+      it 'shows average ratings for items on the order show page' do
+        yesterday = 1.day.ago
+        @item_3 = create(:item)
+        @order = create(:completed_order, user: @user, created_at: yesterday)
+        @oi_1 = create(:fulfilled_order_item, order: @order, item: @item_1, price: 2, quantity: 1, created_at: yesterday, updated_at: 2.hours.ago)
+        @oi_2 = create(:fulfilled_order_item, order: @order, item: @item_2, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+        @oi_5 = create(:fulfilled_order_item, order: @order, item: @item_3, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+        @order_2 = create(:completed_order, user: @user, created_at: 2.days.ago)
+        @oi_3 = create(:fulfilled_order_item, order: @order_2, item: @item_1, price: 2, quantity: 5, created_at: 2.days.ago, updated_at: 1.day.ago)
+
         @user_2 = create(:user)
         @order_other_user = create(:order, user: @user_2, created_at: 2.days.ago)
         @oi_4 = create(:fulfilled_order_item, order: @order_other_user, item: @item_1, price: 2, quantity: 5, created_at: 2.days.ago, updated_at: 1.day.ago)
-        #Confirm that average ratings do not inclde disabled orders
 
+        @rating_1 = create(:rating, order_item: @oi_1, score: 1)
+        @rating_2 = create(:rating, order_item: @oi_1, score: 4)
+        @rating_3 = create(:rating, order_item: @oi_1, score: 5)
+
+        @rating_4 = create(:rating, order_item: @oi_2, score: 3)
+        @user.reload
+
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
+        visit @am_admin ? admin_user_order_path(@user, @order_2) : profile_order_path(@order)
+
+        within "#oitem-#{@oi_1.id}" do
+          expect(page).to have_content("Average Score: #{@oi_1.avg_rating_score}")
+        end
+        within "#oitem-#{@oi_2.id}" do
+          expect(page).to have_content("Average Score: #{@oi_2.avg_rating_score}")
+        end
+        within "#oitem-#{@oi_5.id}" do
+          expect(page).to have_content("Average Score: Not Rated")
+        end
       end
     end
 
