@@ -9,5 +9,17 @@
     <p>Quantity: <%= oitem.quantity %></p>
     <p>Subtotal: <%= number_to_currency(oitem.subtotal) %></p>
     <p>Fulfilled: <%= oitem.fulfilled ? 'Yes' : 'No' %></p>
+    <%= "Average User Score: #{oitem.item.avg_rating_score}" %>
+    <% if @order.status == 'completed' %>
+      <% rating = oitem.enabled_rating %>
+      <% if rating %>
+        <%= "Your Rating: #{rating.title}    Your Score: #{rating.score}" %>
+        <%= "Description: #{rating.description}" %>
+        <p><%= button_to 'Edit Rating', edit_profile_rating_path(rating), method: :get %></p>
+        <p><%= button_to 'Delete Rating', profile_disable_rating_path(rating), method: :patch %></p>
+      <% else %>
+        <p><%= button_to 'Rate this Item', new_profile_rating_path(order_item_id: oitem.id), method: :get %></p>
+      <% end %>
+    <% end %>
   </div>
 </div>

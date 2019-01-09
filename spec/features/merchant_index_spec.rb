@@ -113,6 +113,7 @@ NYC, Seattle WA, Seattle FL
       end
     end
   end
+  
   context 'as an admin user' do
     before :each do
       admin = create(:admin)

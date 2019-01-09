@@ -8,7 +8,7 @@ Item.destroy_all
 User.destroy_all
 
 #admin = create(:admin)
-user = create(:user)
+user = create(:user, email: "user@aol.com", password: "password" )
 merchant_1 = create(:merchant)
 merchant_2 = create(:merchant)
 merchant_3 = create(:merchant)
@@ -36,7 +36,8 @@ item_6 = create(:item, user: merchant_3)
 
 #ORDERS WITH OIs COMPLETED LAST MONTH
 order = create(:completed_order, user: user)
-create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: 30.days.ago, updated_at: 28.days.ago)
+order_item = create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: 30.days.ago, updated_at: 28.days.ago)
+create(:rating, order_item_id: order_item.id, score: 4)
 create(:fulfilled_order_item, order: order, item: item_2, price: 2, quantity: 1, created_at: 30.days.ago, updated_at: 28.days.ago)
 create(:fulfilled_order_item, order: order, item: item_3, price: 3, quantity: 1, created_at: 30.days.ago, updated_at: 28.days.ago)
 create(:fulfilled_order_item, order: order, item: item_4, price: 4, quantity: 1, created_at: 30.days.ago, updated_at: 28.days.ago)

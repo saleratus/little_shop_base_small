@@ -8,6 +8,7 @@ class Profile::RatingsController < ApplicationController
 
   def edit
     @rating = Rating.find(params[:id])
+    @order_item_id = @rating.order_item.id
     @form_path = [:profile, @rating]
   end
 
